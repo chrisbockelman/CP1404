@@ -28,7 +28,7 @@ def main():
     choice = input(MENU).upper()
     while choice != "Q":
         if choice == "R":
-            print("Required list")
+            open_list()
         elif choice == "C":
             print("Completed list")
         elif choice == "A":
@@ -39,5 +39,15 @@ def main():
             print("Invalid menu choice")
         choice = input(MENU).upper()
 
+
+def open_list():
+    try:
+        file = open("items.csv", "r")
+        for line_string in file:
+            print(line_string)
+        file.close()
+
+    except:
+       print("List is empty.")
 main()
 #file = open(items.csv, a+)
