@@ -28,26 +28,64 @@ def main():
     choice = input(MENU).upper()
     while choice != "Q":
         if choice == "R":
-            open_list()
+            print("Required items:")
+            display_list("r")
         elif choice == "C":
-            print("Completed list")
+            print("Completed items:")
+            display_list("c")
         elif choice == "A":
-            print("Add list")
+            add_item()
         elif choice == "M":
-            print("Mark item as complete")
+            change_type()
+            print("Item marked as completed")
         else:
             print("Invalid menu choice")
         choice = input(MENU).upper()
 
+#Displays list, for required, input = 'r', or for completed, input = 'c'
+def display_list(input):
+    file = open("items.csv", "r")
+    count = 1
+    for line_string in file:
+        if line_string[-1] == input:
+            item, price, priority, tag = line_string.split(",")
+            print("{}. {}\t ${:>5} ({})".format(count,item,price, priority))
+            count += 1
+    file.close()
 
-def open_list():
+#Adds new item to the list
+
+#FINISH THIS FUNCTION
+def add_item():
+    file = open("items.csv", "a+")
+    item = input("Item name: ")
+    if item == "":
+        print("Input cannot be blank")
+        item = input("Item name: ")
     try:
-        file = open("items.csv", "r")
-        for line_string in file:
-            print(line_string)
-        file.close()
+        price = float(input("Price: $"))
+        if price < 0:
+            print("Price must be >= $0")
+    except ValueError:
+        print("Please enter a valid number")
+        price = float(input("Price: $"))
+    file.close()
 
-    except:
-       print("List is empty.")
+
+#Changes required tag, 'r' to completed tag, 'c'
+def change_type():
+    file = open("items.csv", "a+")
+    count = 1
+    for line_string in file:
+        item, price, priority, tag = line_string.split(",")
+        print("{}. {}\t ${:>5} ((})".format(count, item, price, priority))
+        count += 1
+    try:
+        choice = int(input("Enter the number of an item to mark as completed: "))
+
+    except ValueError:
+        print("Not a valid number")
+        choice = int(input("Enter the number of an item to mark as complete:"))
+    file.close()
+
 main()
-#file = open(items.csv, a+)
