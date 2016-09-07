@@ -1,25 +1,5 @@
-"""Shopping List 1.0 - by Chris Bockelman
-
-Pseudocode:
-def main:
-    display menu
-    get choice
-    while choice is not 'q'
-        if choice is r:
-            list required items
-        elif choice is 'c':
-            list complete items
-        elif choice is 'a':
-            add new item
-        elif choice is 'm':
-            mark item as complete
-        else:
-            display error message
-        display menu
-        get choice
-    goodbye message
-"""
-
+#Shopping List 1.0 - by Chris Bockelman
+from operator import itemgetter
 MENU = "\nMenu:\n(R)equired items\n(C)ompleted items\n(A)dd item\n(M)ark item as completed\n(Q)uit"
 
 def main():
@@ -43,19 +23,23 @@ def main():
             print("Invalid menu choice")
         choice = input(MENU).upper()
 
-#Displays list, for required, input = 'r', or for completed, input = 'c'
-#TODO Break list into individual parts for output and add price. STOP DISPLAYING WATCH PRICE/PRIORITY, SORT BY PRIORITY
-def display_list(input):
+#Displays list, for required: input = 'r', or for completed: input = 'c'
+#TODO SORT BY PRIORITY.
+def display_list(menuChoice):
     items = []
     file = open("items.csv", "r")
     count = 1
     for line_string in file:
         item, price, priority, tag = line_string.strip().split(",")
-        items.append([item,float(price),priority,tag])
+        items.append([item,float(price),int(priority),tag])
+
+
 
     for item in items:
-        if item[3] == input:
-            print("{}. {}\t ${:>5.2} ({})".format(count, item, price, priority))
+        #TODO figure out itemgetter
+        items.sort(key=itemgetter(2))
+        if item[3] == menuChoice:
+            print("{}. {:20} ${:>6.2f} ({})".format(count, item[0], item[1], item[2]))
             count += 1
 
     file.close()
@@ -101,8 +85,7 @@ def add_item():
 
 
 #Changes required tag, 'r' to completed tag, 'c'
-#FINISH THIS FUNCTION
-#TODO Figure out choice option, infinite nested if?
+#TODO Figure out choice option, infinite nested if?, return 'c' instead of 'r'
 def change_type():
     items = []
     file = open("items.csv", "a+")
@@ -124,6 +107,7 @@ def change_type():
     except ValueError:
         print("Not a valid number")
         choice = int(input("Enter the number of an item to mark as complete:"))
+
     file.close()
 
 main()
