@@ -1,6 +1,7 @@
 #Shopping List 1.0 - by Chris Bockelman
 #Fair warning, items.csv randomly stops
 from operator import itemgetter
+import os, sys
 MENU = "\nMenu:\n(R)equired items\n(C)ompleted items\n(A)dd item\n(M)ark item as completed\n(Q)uit"
 
 def main():
@@ -30,8 +31,8 @@ def display_list(menuChoice):
     file = open("items.csv", "r")
     count = 1
     for line_string in file:
-        item, price, priority, tag = line_string.strip().split(",")
-        items.append([item,float(price),int(priority),tag])
+        itemName, price, priority, tag = line_string.strip().split(", ")
+        items.append([itemName,float(price),int(priority),tag])
 
     items.sort(key=itemgetter(0, 2))
 
@@ -46,12 +47,12 @@ def display_list(menuChoice):
 
 def add_item():
     file = open("items.csv", "a+")
-    name = input("Item name: ")
+    itemName = input("Item name: ")
 
     #Add item name
-    if name == "":
+    if itemName == "":
         print("Input cannot be blank")
-        name = input("Item name: ")
+        itemName = input("Item name: ")
 
 
     #Add item price
@@ -77,8 +78,8 @@ def add_item():
         priority = int(input("Please enter either 1, 2, or 3: "))
 
 
-    print("{},{},{},r".format(name.capitalize(), price, priority), file=file)
-    print("{} has been added to the list.".format(name))
+    print("{}, {}, {}, r".format(itemName.capitalize(), price, priority), file=file)
+    print("{} has been added to the list.".format(itemName.capitalize()))
 
     file.close()
 
@@ -91,27 +92,41 @@ def change_type():
     count = 1
 
     for line_str in file:
-        item, price, priority, tag = line_str.strip().split(',')
-        dict[count] = [item, price, priority, tag]
+        itemName, price, priority, tag = line_str.strip().split(', ')
+        dict[count] = [itemName, price, priority, tag]
         countList.append(count)
         count += 1
 
-    print(countList)
-    print(dict)
-    try:
-        choice = int(input("Enter the number of an item to mark as completed:"))
-        while choice not in countList:
-            print("Invalid input")
+    valid_input = False
+    while not valid_input:
+        try:
             choice = int(input("Enter the number of an item to mark as completed:"))
-        count = choice
-        dict[count][3] = "c"
-    except ValueError:
-        print("Input is invalid")
-        choice = int(input("Enter the number of an item to mark as completed:"))
+            valid_input = True
+
+            while choice not in countList:
+                print("Invalid input")
+                choice = int(input("Enter the number of an item to mark as completed:"))
+            count = choice
+            dict[count][3] = "c"
+
+            file.close()
+            file = open('items.csv', 'w')
+            for value in dict.values():
+                tag = value[3]
+                priority = value[2]
+                price = value[1]
+                itemName = value[0]
+                print("{}, {}, {}, {}".format(itemName.capitalize, price, priority, tag), file=file)
+
+        except ValueError:
+            print("Input is invalid")
+            continue
 
 
 #TODO Write onto file without overwriting everything
 
+    file.close()
+    file = open('items.csv', 'w')
 
     print(dict)
 
