@@ -84,9 +84,8 @@ def add_item():
 
 
 #Changes required tag, 'r' to completed tag, 'c'
-#TODO Figure out choice option, infinite nested if?, return 'c' instead of 'r'
 def change_type():
-    file = open("items.csv", "a+")
+    file = open("items.csv", "r")
     dict = {}
     countList = []
     count = 1
@@ -104,15 +103,19 @@ def change_type():
         while choice not in countList:
             print("Invalid input")
             choice = int(input("Enter the number of an item to mark as completed:"))
-
         count = choice
         dict[count][3] = "c"
-        print(tag.replace('r', 'c'), file=file)
-
-
     except ValueError:
-        print("Not a valid number")
-        choice = int(input("Enter the number of an item to mark as complete:"))
+        print("Input is invalid")
+        choice = int(input("Enter the number of an item to mark as completed:"))
+
+
+#TODO Write onto file without overwriting everything
+
+
+    print(dict)
+
+
 
     file.close()
 
