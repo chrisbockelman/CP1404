@@ -5,7 +5,7 @@ from operator import itemgetter
 
 def main():
     print("Shopping List 1.0 - by Chris Bockelman")
-    MENU = "\nMenu:\n(R)equired items\n(C)ompleted items\n(A)dd item\n(M)ark item as completed\n(Q)uit"
+    MENU = "\nMenu:\nR - List required items\nC - List completed items\nA - Add new item\nM - Mark an item as completed\nQ - Quit"
     choice = input(MENU).upper()
     while choice != "Q":
         if choice == "R":
@@ -35,20 +35,21 @@ else ignore line
 close file"""
 def display_list(menuChoice):
     items = []
-    file = open("items.csv", "r")
-    count = 1
-    for line_string in file:
-        item, price, priority, tag = line_string.strip().split(',')
-        items.append([item,float(price),int(priority),tag])
+    totalPrice = []
+    with open("items.csv") as file:
+        count = 1
+        for line in file:
+            line_str = line.strip()
+            item, price, priority, tag = line_str.split(',')
+            items.append([item,float(price),int(priority),tag])
+            totalPrice.append(float(price))
+        items.sort(key=itemgetter(0, 2))
+        for item in items:
+            if item[3] == menuChoice:
+                print("{}. {:20} ${:>6.2f} ({})".format(count, item[0].capitalize(), item[1], item[2]))
+                count += 1
 
-    items.sort(key=itemgetter(0, 2))
 
-    for item in items:
-        if item[3] == menuChoice:
-            print("{}. {:20} ${:>6.2f} ({})".format(count, item[0].capitalize(), item[1], item[2]))
-            count += 1
-
-    file.close()
 
 """Adds new item to the list
 pseudocode:
